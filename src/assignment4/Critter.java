@@ -24,7 +24,7 @@ import java.util.Random;
 
 public abstract class Critter {
 	private static String myPackage;
-	private	static List<Critter> population = new java.util.ArrayList<Critter>();
+	//private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
 
 	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
@@ -109,6 +109,15 @@ public abstract class Critter {
 
 	
 	protected final void reproduce(Critter offspring, int direction) {
+		if(this.getEnergy() <= Params.min_reproduce_energy)
+			return;
+
+		offspring.energy = this.getEnergy() / 2;
+		this.energy = this.getEnergy() / 2; // TODO round up
+
+		offspring.walk(direction);
+		babies.add(offspring);
+
 	}
 
 	public abstract void doTimeStep();
@@ -215,17 +224,17 @@ public abstract class Critter {
 		/*
 		 * This method getPopulation has to be modified by you if you are not using the population
 		 * ArrayList that has been provided in the starter code.  In any case, it has to be
-		 * implemented for grading tests to work.
+		 * implemented for grading tests to work. EDIT: edited to reflect implementation
 		 */
 		protected static List<Critter> getPopulation() {
-			return population;
+			return CritterWorld.world;
 		}
 		
 		/*
 		 * This method getBabies has to be modified by you if you are not using the babies
 		 * ArrayList that has been provided in the starter code.  In any case, it has to be
 		 * implemented for grading tests to work.  Babies should be added to the general population 
-		 * at either the beginning OR the end of every timestep.
+		 * at either the beginning OR the end of every timestep. EDIT: in use
 		 */
 		protected static List<Critter> getBabies() {
 			return babies;
@@ -237,7 +246,7 @@ public abstract class Critter {
 	 */
 	public static void clearWorld() {
 		for(Critter c : CritterWorld.world)
-			CritterWorld.world.remove(c);
+			CritterWorld.removeFromWorld(c);
 	}
 	
 	public static void worldTimeStep() {
@@ -246,8 +255,11 @@ public abstract class Critter {
 
 		CritterWorld.resolveEncounters();
 
-		// TODO add new critters to world (after encounters resolved)
+		// add new critters (babies) to world (after encounters resolved)
+		for(Critter baby : babies)
+			CritterWorld.addToWorld(baby);
 
+		// remove dead critters from world
 		for(Critter c: CritterWorld.world)
 		{
 			if(c.getEnergy() <= 0)

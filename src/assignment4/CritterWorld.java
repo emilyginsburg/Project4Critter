@@ -23,6 +23,8 @@ public class CritterWorld {
         return;
     }
 
+
+
     // returns arraylist with critters that are found in the same position (all on one)
     // figure out a way so that this only ends when all encounters are found?
     public static void resolveEncounters() {
