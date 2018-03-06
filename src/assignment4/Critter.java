@@ -53,6 +53,7 @@ public abstract class Critter {
 	private static int walking_steps = 1;
 	private static int running_steps = 2;
 
+	// TODO note that no critter can call walk or run more than once in a time step (see stage 3)
 	
 	protected final void walk(int direction) {
 		this.move(direction, walking_steps);
@@ -65,7 +66,6 @@ public abstract class Critter {
 	}
 
 	private final void move(int direction, int steps) {
-		// TODO account for world wrapping
 		if(direction == 0)	// E
 			x_coord += steps;
 		if(direction == 2)	// N
@@ -94,6 +94,16 @@ public abstract class Critter {
 			x_coord += steps;
 			y_coord += steps;
 		}
+		// account for world wrapping
+		if(x_coord >= Params.world_width)	// fell off right side of world
+			x_coord = x_coord - Params.world_width;
+		if(x_coord < 0)		// fell off left side of world
+			x_coord = x_coord + Params.world_width;
+		if(y_coord >= Params.world_height)	// fell off bottom of world
+			y_coord = y_coord - Params.world_height;
+		if(y_coord < 0)		// fell off top of world
+			y_coord = y_coord + Params.world_height;
+
 
 	}
 
@@ -122,9 +132,8 @@ public abstract class Critter {
 			critterClass = Class.forName(critter_class_name);
 			Critter critter = (Critter) critterClass.newInstance();
 
-			Random rand = new Random();
-			critter.x_coord = rand.nextInt(Params.world_width);
-			critter.y_coord = rand.nextInt(Params.world_height);
+			critter.x_coord = Critter.getRandomInt(Params.world_width);
+			critter.y_coord = Critter.getRandomInt(Params.world_height);
 			critter.energy = Params.start_energy;
 			CritterWorld.addToWorld(critter);
 
@@ -227,7 +236,8 @@ public abstract class Critter {
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
-		// Complete this method.
+		for(Critter c : CritterWorld.world)
+			CritterWorld.world.remove(c);
 	}
 	
 	public static void worldTimeStep() {
@@ -247,6 +257,26 @@ public abstract class Critter {
 	}
 	
 	public static void displayWorld() {
-		// Complete this method.
+		int i; // used in for loops
+		System.out.print("+");
+		for(i = 0; i < Params.world_width; i++)
+			System.out.print("-");
+		System.out.println("+");
+
+		for(i = 0; i<Params.world_height; i++)
+		{
+			System.out.print("|");
+			for(int j = 0; j<Params.world_width; j++)
+			{
+				// TODO print present critters
+			}
+			System.out.println("|");
+		}
+
+		System.out.print("+");
+		for(i = 0; i < Params.world_width; i++)
+			System.out.print("-");
+		System.out.println("+");
+
 	}
 }
