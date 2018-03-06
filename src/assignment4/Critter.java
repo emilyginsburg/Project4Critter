@@ -144,7 +144,7 @@ public abstract class Critter {
 			critter.x_coord = Critter.getRandomInt(Params.world_width);
 			critter.y_coord = Critter.getRandomInt(Params.world_height);
 			critter.energy = Params.start_energy;
-			CritterWorld.addToWorld(critter);
+			CritterWorld.addToWorld(critter, critter.x_coord, critter.y_coord);
 
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
 			throw new InvalidCritterException(critter_class_name);
@@ -249,22 +249,41 @@ public abstract class Critter {
 			CritterWorld.removeFromWorld(c);
 	}
 	
-	public static void worldTimeStep() {
+	public static void worldTimeStep() throws InvalidCritterException {
+
+		// TODO
+	// 1. increment timestep; timestep++;
+	// 2. doTimeSteps();
+	// 3. Do the fights. doEncounters();
+	// 4. updateRestEnergy();
+	// 5. Generate Algae genAlgae();
+	// 6. Move babies to general population. population.addAll(babies); babies.clear();
+
 		for(Critter c: CritterWorld.world)
 			c.doTimeStep();
 
 		CritterWorld.resolveEncounters();
 
-		// add new critters (babies) to world (after encounters resolved)
-		for(Critter baby : babies)
-			CritterWorld.addToWorld(baby);
-
 		// remove dead critters from world
 		for(Critter c: CritterWorld.world)
 		{
+			c.energy -= Params.rest_energy_cost;	// every critter loses rest energy
 			if(c.getEnergy() <= 0)
 				CritterWorld.removeFromWorld(c);                                                                              ;
 		}
+
+		for(int i = 0; i < Params.refresh_algae_count; i++)
+		{
+			makeCritter("Algae");
+		}
+
+		// add new critters (babies) to world (after encounters resolved)
+		for(Critter baby : babies)
+			CritterWorld.addToWorld(baby, baby.x_coord, baby.y_coord);
+
+		babies.clear();
+
+
 
 	}
 	

@@ -5,15 +5,19 @@ import java.util.ArrayList;
 public class CritterWorld {
 
     public static ArrayList<Critter> world;
+    public static Critter[][] grid;
 
     public CritterWorld() {
+
         world = new ArrayList<Critter>();
+        grid = new Critter[Params.world_width][Params.world_height];    // used for finding encounters and printing
     }
 
 
-    // adds critter to world, assumes critter is new to world
-    public static void addToWorld(Critter critter) {
+    // adds critter to world and grid, assumes critter is new to world
+    public static void addToWorld(Critter critter, int x, int y) {
         world.add(critter);
+        grid[x][y] = critter;   // TODO account for multiple critters
         return;
     }
 
