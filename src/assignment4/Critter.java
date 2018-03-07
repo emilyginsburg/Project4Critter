@@ -13,6 +13,7 @@ package assignment4;
  */
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -246,7 +247,7 @@ public abstract class Critter {
 	 */
 	public static void clearWorld() {
 		for(Critter c : CritterWorld.world)
-			CritterWorld.removeFromWorld(c);
+			CritterWorld.removeFromWorld(c, c.x_coord, c.y_coord);
 	}
 	
 	public static void worldTimeStep() throws InvalidCritterException {
@@ -262,14 +263,14 @@ public abstract class Critter {
 		for(Critter c: CritterWorld.world)
 			c.doTimeStep();
 
-		CritterWorld.resolveEncounters();
+		resolveEncounters();
 
 		// remove dead critters from world
 		for(Critter c: CritterWorld.world)
 		{
 			c.energy -= Params.rest_energy_cost;	// every critter loses rest energy
 			if(c.getEnergy() <= 0)
-				CritterWorld.removeFromWorld(c);                                                                              ;
+				CritterWorld.removeFromWorld(c, c.x_coord, c.y_coord);                                                                              ;
 		}
 
 		for(int i = 0; i < Params.refresh_algae_count; i++)
@@ -299,7 +300,10 @@ public abstract class Critter {
 			System.out.print("|");
 			for(int j = 0; j<Params.world_width; j++)
 			{
-				// TODO print present critters
+				if(CritterWorld.grid[j][i] != null)	// TODO make sure it should be j i (and not i j)
+					System.out.print(CritterWorld.grid[j][i].toString());
+				else
+					System.out.print(" ");
 			}
 			System.out.println("|");
 		}
@@ -310,4 +314,74 @@ public abstract class Critter {
 		System.out.println("+");
 
 	}
+
+	// returns arraylist with critters that are found in the same position (all on one)
+	// figure out a way so that this only ends when all encounters are found?
+	private static void resolveEncounters() {
+
+		for(Critter c1 : CritterWorld.world)
+		{
+			for(Critter c2 : CritterWorld.world)
+			{
+				if((c1.x_coord == c2.x_coord) && (c1.y_coord == c2.y_coord))	// encounter found
+				{
+					whoGetsToStay(c1, c2);
+				}
+			}
+		}
+
+
+
+	}
+
+	// passes in an arraylist of critters who are on the same location
+	// at the return, the loser is dead (enery of zero, but still present in world)
+	// loser will be removed from world during time step
+	private static void whoGetsToStay(Critter A, Critter B) {
+		if(A.energy == 0 || B.energy == 0) // one critter is already dead, no fight needed
+			return;
+
+		boolean AwantsToFight = A.fight(B.toString());
+		boolean BwantsToFight = B.fight(A.toString());
+
+		if((A.energy != 0) && (B.energy != 0)) // neither critter has died attempting to run
+			if ((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord))	// neither critter has ran away
+			{
+				// fight occurs
+				int diceA, diceB;
+				Critter winner, loser;
+
+				if(AwantsToFight)
+					diceA = getRandomInt(A.energy);
+				else
+					diceA = 0;
+
+				if(BwantsToFight)
+					diceB = getRandomInt(B.energy);
+				else
+					diceB = 0;
+
+
+				if(diceA >= diceB)	// A wins (if they are equal, A also wins)
+				{
+					winner = A;
+					loser = B;
+				}
+				else	// B wins
+				{
+					winner = B;
+					loser = A;
+				}
+
+				winner.energy += (loser.energy / 2);
+				loser.energy = 0;
+
+			}
+
+
+
+	}
+
+
+
 }
