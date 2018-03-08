@@ -51,18 +51,27 @@ public abstract class Critter {
 	
 	private int x_coord;
 	private int y_coord;
+	private boolean movedThisStep;
 	private static int walking_steps = 1;
 	private static int running_steps = 2;
 
-	// TODO note that no critter can call walk or run more than once in a time step (see stage 3)
+
+	/*
+	*  Note that critters cannot move twice from within the same doTimeStep
+	 function. If a Critter subclass calls walk and/or run two (or more) times within a single
+	 time step, you must deduct the appropriate energy cost from the critter for walking/running,
+	 but you must not actually alter the critter’s position. Critters can die in this fashion
+	* */
 	
 	protected final void walk(int direction) {
-		this.move(direction, walking_steps);
+		if(!movedThisStep)
+			this.move(direction, walking_steps);
 		energy -= Params.walk_energy_cost;
 	}
 	
 	protected final void run(int direction) {
-		this.move(direction, running_steps);
+		if(!movedThisStep)
+			this.move(direction, running_steps);
 		energy -= Params.run_energy_cost;
 	}
 
@@ -105,6 +114,7 @@ public abstract class Critter {
 		if(y_coord < 0)		// fell off top of world
 			y_coord = y_coord + Params.world_height;
 
+		movedThisStep = true;
 
 	}
 
@@ -146,6 +156,7 @@ public abstract class Critter {
 			critter.y_coord = Critter.getRandomInt(Params.world_height);
 			critter.energy = Params.start_energy;
 			CritterWorld.addToWorld(critter, critter.x_coord, critter.y_coord);
+			critter.movedThisStep = false;
 
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
 			throw new InvalidCritterException(critter_class_name);
@@ -206,10 +217,16 @@ public abstract class Critter {
 		}
 		
 		protected void setX_coord(int new_x_coord) {
+
+			CritterWorld.grid[getX_coord()][getY_coord()] = null;
+			CritterWorld.grid[new_x_coord][getY_coord()] = this;
 			super.x_coord = new_x_coord;
 		}
 		
 		protected void setY_coord(int new_y_coord) {
+
+			CritterWorld.grid[getX_coord()][getY_coord()] = null;
+			CritterWorld.grid[getX_coord()][new_y_coord] = this;
 			super.y_coord = new_y_coord;
 		}
 		
@@ -261,7 +278,10 @@ public abstract class Critter {
 	// 6. Move babies to general population. population.addAll(babies); babies.clear();
 
 		for(Critter c: CritterWorld.world)
+		{
+			c.movedThisStep = false;
 			c.doTimeStep();
+		}
 
 		resolveEncounters();
 

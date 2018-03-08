@@ -41,7 +41,7 @@ public class Main {
      * @param args args can be empty.  If not empty, provide two parameters -- the first is a file name, 
      * and the second is test (for test output, where all output to be directed to a String), or nothing.
      */
-    public static void main(String[] args) { 
+    public static void main(String[] args) throws InvalidCritterException {
         if (args.length != 0) {
             try {
                 inputFile = args[0];
@@ -69,7 +69,10 @@ public class Main {
 
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
-        
+
+        CritterWorld critterWorld = new CritterWorld();
+        //Critter.makeCritter("Craig");
+        Critter.displayWorld();
         // System.out.println("GLHF");
         
         /* Write your code above */

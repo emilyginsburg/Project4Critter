@@ -11,6 +11,9 @@ public class CritterWorld {
 
         world = new ArrayList<Critter>();
         grid = new Critter[Params.world_width][Params.world_height];    // used for printing ONLY
+        for(int i = 0; i < Params.world_width; i++)
+            for(int j = 0; j < Params.world_height; j++)
+                grid[i][j] = null;
     }
 
 
