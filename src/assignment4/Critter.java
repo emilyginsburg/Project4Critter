@@ -353,27 +353,26 @@ public abstract class Critter {
 	// loser will be removed from world during time step
 	private static void whoGetsToStay(Critter A, Critter B) {
 		Critter winner, loser;
-		if(A.energy == 0 || B.energy == 0) // one critter is already dead, no fight needed
+		if (A.energy == 0 || B.energy == 0) // one critter is already dead, no fight needed
 			return;
 
 		boolean AwantsToFight = A.fight(B.toString());
 		boolean BwantsToFight = B.fight(A.toString());
 
-		if((A.energy != 0) && (B.energy != 0)) // neither critter has died attempting to run
-			if ((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord)){	// neither critter has run away
+		if ((A.energy != 0) && (B.energy != 0)) // neither critter has died attempting to run
+			if ((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord)) {    // neither critter has run away
 
 				// fight occurs
 				//dementors always wins (but they don't fight Algae)
-				if(A.toString().equals("D") && AwantsToFight){
+				if (A.toString().equals("D") && AwantsToFight) {
 					winner = A;
 					loser = B;
-				}else
-				if(B.toString().equals("D") && BwantsToFight){
+				} else if (B.toString().equals("D") && BwantsToFight) {
 					winner = B;
 					loser = A;
 					//TODO: if algae and dementor, make sure neither is affected in fight (both stay on map unless energy is drained)
-				//dementor is not involved
-				}else {
+					//dementor is not involved
+				} else {
 					int diceA, diceB;
 					//set dice
 					//A
@@ -387,10 +386,11 @@ public abstract class Critter {
 					else
 						diceB = 0;
 					//compare the dice
-					if (diceA >= diceB){    // A wins (if they are equal, A also wins)
+					//TODO: we probably don't want algae winning over anyone
+					if (diceA >= diceB) {    // A wins (if they are equal, A also wins)
 						winner = A;
 						loser = B;
-					} else {   			    // B wins
+					} else {                // B wins
 						winner = B;
 						loser = A;
 					}
@@ -398,13 +398,12 @@ public abstract class Critter {
 
 				winner.energy += (loser.energy / 2);
 				loser.energy = 0;
-
 			}
-
+	}
+	//TODO: finish for algae and dementor
+	private static Critter specialCases (Critter A, Critter B,boolean critABool, boolean critBBool){
+		return A;
 
 
 	}
-
-
-
 }
