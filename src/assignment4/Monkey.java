@@ -52,6 +52,7 @@ public class Monkey extends Critter{
     @Override
     public boolean fight(String oponent) {
         //monkey is scared of dementors
+        //  TODO: implement running away
         if(oponent.equals("D"))
             return false;
         //count algae encounters
