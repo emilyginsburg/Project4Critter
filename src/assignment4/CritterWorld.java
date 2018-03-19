@@ -1,4 +1,15 @@
 package assignment4;
+/* CRITTERS Critter.java
+ * EE422C Project 4 submission by
+ * Marielle Lopez
+ * mal5427
+ * 15495
+ * Emily Ginsburg
+ * eag3598
+ * 15495
+ * Slip days used: <0>
+ * Fall 2016
+ */
 
 import java.util.ArrayList;
 
