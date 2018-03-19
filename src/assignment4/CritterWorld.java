@@ -42,6 +42,15 @@ public class CritterWorld {
         return;
     }
 
+    //checks if there is a Critter in the location on the world
+    //true if spot is populated,
+
+
+    public static boolean lookInWorld(int x, int y){
+        Critter critter = grid [x][y];
+        if(critter == null) return false;
+        return true;
+    }
 
 
 
