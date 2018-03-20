@@ -1,13 +1,12 @@
 package assignment4;
-/* CRITTERS Main.java
+/* CRITTERS Critter.java
  * EE422C Project 4 submission by
- * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Marielle Lopez
+ * mal5427
+ * 15495
+ * Emily Ginsburg
+ * eag3598
+ * 15495
  * Slip days used: <0>
  * Fall 2016
  */
@@ -45,7 +44,7 @@ public class Main {
         if (args.length != 0) {
             try {
                 inputFile = args[0];
-                kb = new Scanner(new File(inputFile));			
+                kb = new Scanner(new File(inputFile));
             } catch (FileNotFoundException e) {
                 System.out.println("USAGE: java Main OR java Main <input file> <test output>");
                 e.printStackTrace();
@@ -69,12 +68,16 @@ public class Main {
 
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
+        //prompt and read
+        System.out.println("critters> ");
+        String input = kb.nextLine();
+        String[] split = input.split(" ");  //space is the delimiter
 
         CritterWorld critterWorld = new CritterWorld();
         //Critter.makeCritter("Craig");
         Critter.displayWorld();
         // System.out.println("GLHF");
-        
+
         /* Write your code above */
         System.out.flush();
 
