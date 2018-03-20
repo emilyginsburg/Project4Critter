@@ -11,6 +11,8 @@ package assignment4;
  * Fall 2016
  */
 
+import java.text.ParseException;
+import java.util.List;
 import java.util.Scanner;
 import java.io.*;
 
@@ -69,14 +71,82 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
         //prompt and read
-        System.out.println("critters> ");
-        String input = kb.nextLine();
-        String[] split = input.split(" ");  //space is the delimiter
 
         CritterWorld critterWorld = new CritterWorld();
-        //Critter.makeCritter("Craig");
-        Critter.displayWorld();
-        // System.out.println("GLHF");
+        while(true)
+        {
+            System.out.println("critters> ");
+            String input = kb.nextLine();
+            String[] split = input.split(" ");  //space is the delimiter
+            try
+            {
+                if(split[0].equals("quit"))
+                    break;
+                if(split[0].equals("show"))
+                {
+                    if(split.length != 1)
+                        throw new InvalidCritterException("show");
+
+                    Critter.displayWorld();
+                }
+                else if(split[0].equals("step"))
+                {
+                    if(split.length > 2)
+                        throw new InvalidCritterException("step");
+
+                    if(split.length == 1)
+                        Critter.worldTimeStep();
+                    else
+                    {
+                        int steps = Integer.parseInt(split[1]);
+                        for(int i = 0; i < steps; i++)
+                            Critter.worldTimeStep();
+                    }
+                }
+                else if(split[0].equals("seed"))
+                {
+                    if(split.length != 2)
+                        throw new InvalidCritterException("seed");
+
+                    Critter.setSeed(Integer.parseInt(split[1]));
+                }
+                else if(split[0].equals("make"))
+                {
+                    if(split.length != 2 && split.length != 3)
+                        throw new InvalidCritterException("make");
+
+                    int i;
+                    if(split.length == 2)
+                        i = 1;
+                    else // length == 3
+                        i = Integer.parseInt(split[2]);
+
+                    for(int m = 0; m < i; m++)
+                        Critter.makeCritter(split[1]);
+                    // TODO check note from pdf
+                }
+                else if(split[0].equals("stats"))
+                {
+                    if(split.length != 2)
+                        throw new InvalidCritterException("stats");
+
+                    List<Critter> stats = Critter.getInstances(split[1]);
+                    Class critterClass = Class.forName("assignment4." + split[1]);
+                    //critterClass.runStats(); // TODO figure this out
+                }
+                else // invalid command
+                {
+                    System.out.println("invalid command: " + input);
+                }
+            }
+            catch(InvalidCritterException | ClassNotFoundException e)    // TODO should we use parse exception?
+            {
+                System.out.println("error processing: " + input);
+            }
+
+            //TODO account for tabs in addition to spaces
+        }
+
 
         /* Write your code above */
         System.out.flush();

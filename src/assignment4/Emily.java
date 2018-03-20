@@ -1,6 +1,12 @@
 package assignment4;
 
+import java.util.List;
+
 public class Emily extends Critter {
+
+    public Emily() {
+
+    }
 
     @Override
     public String toString() { return "e"; }
@@ -16,8 +22,11 @@ public class Emily extends Critter {
     public boolean fight(String not_used) {
         // Emily tries to run away from the fight
         int direction = getEnergy() % 8;
-        run(direction);
-        // TODO cannot run to a spot that is occupied by another critter
-        return false;
+        run(direction); // cannot run to a spot that is occupied by another critter, implemented in move function
+        return false;   // if run fails, Emily will not fight back
+    }
+
+    public static void runStats(List<Critter> critters) {
+
     }
 }

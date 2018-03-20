@@ -12,9 +12,7 @@ package assignment4;
  */
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /* see the PDF for descriptions of the methods and fields in this class
  * you may add fields, methods or inner classes to Critter ONLY if you make your additions private
@@ -75,6 +73,10 @@ public abstract class Critter {
 	}
 
 	private final void move(int direction, int steps) {
+
+		int oldX = x_coord;
+		int oldY = y_coord;
+
 		if(direction == 0)	// E
 			x_coord += steps;
 		if(direction == 2)	// N
@@ -115,6 +117,18 @@ public abstract class Critter {
 
 		movedThisStep = true;
 
+		if(this.getClass().toString().equals("assignment4.Emily"))
+		{
+			for(Critter c : CritterWorld.world)
+				if(c.x_coord == this.x_coord && c.y_coord == this.y_coord)	// illegal move during fight
+				{
+					this.x_coord = oldX;
+					this.y_coord = oldY;
+				}
+		}
+
+
+
 	}
 
 
@@ -154,13 +168,14 @@ public abstract class Critter {
 
 		Class critterClass = null;
 		try {
+			critter_class_name = "assignment4." + critter_class_name;
 			critterClass = Class.forName(critter_class_name);
 			Critter critter = (Critter) critterClass.newInstance();
 
 			critter.x_coord = Critter.getRandomInt(Params.world_width);
 			critter.y_coord = Critter.getRandomInt(Params.world_height);
 			critter.energy = Params.start_energy;
-			CritterWorld.addToWorld(critter, critter.x_coord, critter.y_coord);
+			CritterWorld.addToWorld(critter);
 			critter.movedThisStep = false;
 
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
@@ -178,7 +193,7 @@ public abstract class Critter {
 	 */
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		List<Critter> result = new java.util.ArrayList<Critter>();
-
+		// TODO write this
 		return result;
 	}
 
@@ -222,16 +237,10 @@ public abstract class Critter {
 		}
 
 		protected void setX_coord(int new_x_coord) {
-
-			CritterWorld.grid[getX_coord()][getY_coord()] = null;
-			CritterWorld.grid[new_x_coord][getY_coord()] = this;
 			super.x_coord = new_x_coord;
 		}
 
 		protected void setY_coord(int new_y_coord) {
-
-			CritterWorld.grid[getX_coord()][getY_coord()] = null;
-			CritterWorld.grid[getX_coord()][new_y_coord] = this;
 			super.y_coord = new_y_coord;
 		}
 
@@ -269,7 +278,7 @@ public abstract class Critter {
 	 */
 	public static void clearWorld() {
 		for(Critter c : CritterWorld.world)
-			CritterWorld.removeFromWorld(c, c.x_coord, c.y_coord);
+			CritterWorld.removeFromWorld(c);
 	}
 
 	public static void worldTimeStep() throws InvalidCritterException {
@@ -282,18 +291,25 @@ public abstract class Critter {
 		// 5. Generate Algae genAlgae();
 		// 6. Move babies to general population. population.addAll(babies); babies.clear();
 
-		for(Critter c: CritterWorld.world) {
+		for(Critter c : CritterWorld.world) {
 			c.movedThisStep = false;
 			c.doTimeStep();
 		}
+
 		resolveEncounters();
 
 		// remove dead critters from world
-		for(Critter c: CritterWorld.world) {
+		for(int i = 0; i < CritterWorld.world.size(); i++)
+		{
+			Critter c = CritterWorld.world.get(i);
 			c.energy -= Params.rest_energy_cost;	// every critter loses rest energy
 			if(c.getEnergy() <= 0)
-				CritterWorld.removeFromWorld(c, c.x_coord, c.y_coord);                                                                              ;
+			{
+				CritterWorld.removeFromWorld(c);
+				i--;
+			}
 		}
+
 
 		for(int i = 0; i < Params.refresh_algae_count; i++) {
 			makeCritter("Algae");
@@ -301,15 +317,24 @@ public abstract class Critter {
 
 		// add new critters (babies) to world (after encounters resolved)
 		for(Critter baby : babies)
-			CritterWorld.addToWorld(baby, baby.x_coord, baby.y_coord);
+			CritterWorld.addToWorld(baby);
 
 		babies.clear();
-
-
 
 	}
 
 	public static void displayWorld() {
+
+		Critter [][] grid = new Critter[Params.world_width][Params.world_height];    // used for printing ONLY
+		for(int i = 0; i < Params.world_width; i++)
+			for(int j = 0; j < Params.world_height; j++)
+				grid[i][j] = null;
+
+		for(Critter c : CritterWorld.world)
+		{
+			grid[c.x_coord][c.y_coord] = c;
+		}
+
 		int i; // used in for loops
 		System.out.print("+");
 		for(i = 0; i < Params.world_width; i++)
@@ -321,8 +346,8 @@ public abstract class Critter {
 			System.out.print("|");
 			for(int j = 0; j<Params.world_width; j++)
 			{
-				if(CritterWorld.grid[j][i] != null)	// TODO make sure it should be j i (and not i j)
-					System.out.print(CritterWorld.grid[j][i].toString());
+				if(grid[j][i] != null)	// TODO make sure it should be j i (and not i j)
+					System.out.print(grid[j][i].toString());
 				else
 					System.out.print(" ");
 			}
@@ -342,7 +367,8 @@ public abstract class Critter {
 		for(Critter c1 : CritterWorld.world) {
 			for(Critter c2 : CritterWorld.world) {
 				if((c1.x_coord == c2.x_coord) && (c1.y_coord == c2.y_coord)){	// encounter found
-					whoGetsToStay(c1, c2);
+					if(c1 != c2)
+						whoGetsToStay(c1, c2);
 				}
 			}
 		}
@@ -386,7 +412,6 @@ public abstract class Critter {
 					else
 						diceB = 0;
 					//compare the dice
-					//TODO: we probably don't want algae winning over anyone
 					if (diceA >= diceB) {    // A wins (if they are equal, A also wins)
 						winner = A;
 						loser = B;
