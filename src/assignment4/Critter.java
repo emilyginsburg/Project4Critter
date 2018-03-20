@@ -142,12 +142,13 @@ public abstract class Critter {
 			this.energy = (this.getEnergy() / 2) + 1;
 		else this.energy = this.getEnergy() / 2;
 
-
+		offspring.x_coord = this.x_coord;
+		offspring.y_coord = this.y_coord;
 		offspring.walk(direction);
+		offspring.movedThisStep = false;
+
 		babies.add(offspring);
 
-		// TODO why is this here?
-		//movedThisStep = false;
 
 	}
 
@@ -194,7 +195,18 @@ public abstract class Critter {
 	 */
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		List<Critter> result = new java.util.ArrayList<Critter>();
-		// TODO write this
+
+		try {
+			Class critterClass = Class.forName("assignment4." + critter_class_name);
+			for(Critter c : CritterWorld.world)
+			{
+				if(c.getClass().equals(critterClass))
+					result.add(c);
+			}
+		} catch (ClassNotFoundException e) {
+			throw new InvalidCritterException(critter_class_name);
+		}
+
 		return result;
 	}
 
@@ -313,7 +325,7 @@ public abstract class Critter {
 
 
 		for(int i = 0; i < Params.refresh_algae_count; i++) {
-		//	makeCritter("Algae");
+			makeCritter("Algae");
 		}
 
 		// add new critters (babies) to world (after encounters resolved)
@@ -359,6 +371,7 @@ public abstract class Critter {
 		for(i = 0; i < Params.world_width; i++)
 			System.out.print("-");
 		System.out.println("+");
+
 
 	}
 

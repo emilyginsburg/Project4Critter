@@ -58,7 +58,7 @@ public class Bunny extends Critter {
                 totalRabbits++;
         }
         System.out.print("" + critters.size() + " total Bunnies,    ");
-        System.out.print("" + totalBabyBunnies + " total Baby Bunnies    ");
+        System.out.print("" + totalBabyBunnies + " total Baby Bunnies,    ");
         System.out.print("" + totalRabbits + " total Grown Rabbits    ");
         System.out.println();
     }

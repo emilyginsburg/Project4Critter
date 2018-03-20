@@ -11,6 +11,7 @@ package assignment4;
  * Fall 2016
  */
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
@@ -131,15 +132,22 @@ public class Main {
                         throw new InvalidCritterException("stats");
 
                     List<Critter> stats = Critter.getInstances(split[1]);
+
+                    for(Critter c : stats)
+                        System.out.println(c);
+
                     Class critterClass = Class.forName("assignment4." + split[1]);
-                    //critterClass.runStats(); // TODO figure this out
+                    Class[] parameters = new Class[1];
+                    parameters[0] = java.util.List.class;
+                    java.lang.reflect.Method runStats = critterClass.getMethod("runStats", parameters);
+                    runStats.invoke(critterClass, stats);
                 }
                 else // invalid command
                 {
                     System.out.println("invalid command: " + input);
                 }
             }
-            catch(InvalidCritterException | ClassNotFoundException e)    // TODO should we use parse exception?
+            catch(InvalidCritterException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
             {
                 System.out.println("error processing: " + input);
             }
