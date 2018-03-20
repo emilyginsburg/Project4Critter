@@ -146,7 +146,8 @@ public abstract class Critter {
 		offspring.walk(direction);
 		babies.add(offspring);
 
-		movedThisStep = false;
+		// TODO why is this here?
+		//movedThisStep = false;
 
 	}
 
@@ -312,7 +313,7 @@ public abstract class Critter {
 
 
 		for(int i = 0; i < Params.refresh_algae_count; i++) {
-			makeCritter("Algae");
+		//	makeCritter("Algae");
 		}
 
 		// add new critters (babies) to world (after encounters resolved)
