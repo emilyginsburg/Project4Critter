@@ -1,5 +1,28 @@
 package assignment4;
 
+/* CRITTERS Critter.java
+ * EE422C Project 4 submission by
+ * Marielle Lopez
+ * mal5427
+ * 15495
+ * Emily Ginsburg
+ * eag3598
+ * 15495
+ * Slip days used: <0>
+ * Spring 2018
+ */
+//Bunnys
+//Time Step:
+//          After a Bunny has been through a time step, it grows up from "b" to "B"
+//          Bunnys give birth to up to 4 (energy provided) children each time step
+//Fight:
+//          Bunnys always fight, unless it is against Algae, in which case they ignore the algae
+//Report Stats:
+//          The amount of Bunnys is reported
+//          The amount of Baby Bunnys is reported ("b")
+//          The amount of Grown Bunnys is reported ("B")
+
+
 import java.util.List;
 
 public class Bunny extends Critter {

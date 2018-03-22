@@ -1,5 +1,26 @@
 package assignment4;
 
+/* CRITTERS Critter.java
+ * EE422C Project 4 submission by
+ * Marielle Lopez
+ * mal5427
+ * 15495
+ * Emily Ginsburg
+ * eag3598
+ * 15495
+ * Slip days used: <0>
+ * Spring 2018
+ */
+//Emily
+//Time Step:
+//          Emilys change direction randomly, based on energy, each time step
+//Fight:
+//          Emilys will either try to run away from a fight (freak out), or they will not fight at all
+//Report Stats:
+//          The amount of Emilys is reported
+//          The amount of Freakouts by Emilys is reported
+
+
 import java.util.List;
 
 public class Emily extends Critter {
