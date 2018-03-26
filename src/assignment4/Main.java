@@ -1,4 +1,11 @@
 package assignment4;
+
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Scanner;
+import java.io.*;
+
 /* CRITTERS Critter.java
  * EE422C Project 4 submission by
  * Marielle Lopez
@@ -10,12 +17,6 @@ package assignment4;
  * Slip days used: <0>
  * Spring 2018
  */
-
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Scanner;
-import java.io.*;
 
 
 /*
@@ -40,9 +41,10 @@ public class Main {
 
     /**
      * Main method.
-     * @param args args can be empty.  If not empty, provide two parameters -- the first is a file name, 
+     * @param args args can be empty.  If not empty, provide two parameters -- the first is a file name,
      * and the second is test (for test output, where all output to be directed to a String), or nothing.
      */
+    //the main method is the Controller in the MVC
     public static void main(String[] args) throws InvalidCritterException {
         if (args.length != 0) {
             try {
@@ -71,32 +73,34 @@ public class Main {
 
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
-        //prompt and read
+
 
         CritterWorld critterWorld = new CritterWorld();
         while(true)
         {
+            //prompt and read
             System.out.println("critters> ");
             String input = kb.nextLine();
             String[] split = input.split(" ");  //space is the delimiter
-            try
-            {
+            try {
+                //quit
                 if(split[0].equals("quit"))
                     break;
-                if(split[0].equals("show"))
-                {
+
+                //show
+                if(split[0].equals("show")) {
                     if(split.length != 1)
                         throw new InvalidCritterException("show");
-
                     Critter.displayWorld();
                 }
-                else if(split[0].equals("step"))
-                {
+                //step
+                else if(split[0].equals("step")) {
                     if(split.length > 2)
                         throw new InvalidCritterException("step");
-
+                    //one step
                     if(split.length == 1)
                         Critter.worldTimeStep();
+                    //more than one step
                     else
                     {
                         int steps = Integer.parseInt(split[1]);
@@ -104,15 +108,14 @@ public class Main {
                             Critter.worldTimeStep();
                     }
                 }
-                else if(split[0].equals("seed"))
-                {
+                //seed
+                else if(split[0].equals("seed")) {
                     if(split.length != 2)
                         throw new InvalidCritterException("seed");
-
                     Critter.setSeed(Integer.parseInt(split[1]));
                 }
-                else if(split[0].equals("make"))
-                {
+                //make
+                else if(split[0].equals("make")) {
                     if(split.length != 2 && split.length != 3)
                         throw new InvalidCritterException("make");
 
@@ -126,15 +129,12 @@ public class Main {
                         Critter.makeCritter(split[1]);
                     // TODO check note from pdf
                 }
-                else if(split[0].equals("stats"))
-                {
+                //stats
+                else if(split[0].equals("stats")) {
                     if(split.length != 2)
                         throw new InvalidCritterException("stats");
 
                     List<Critter> stats = Critter.getInstances(split[1]);
-
-                    for(Critter c : stats)
-                        System.out.println(c);
 
                     Class critterClass = Class.forName("assignment4." + split[1]);
                     Class[] parameters = new Class[1];
@@ -142,20 +142,15 @@ public class Main {
                     java.lang.reflect.Method runStats = critterClass.getMethod("runStats", parameters);
                     runStats.invoke(critterClass, stats);
                 }
-                else // invalid command
-                {
+                else {// invalid command
                     System.out.println("invalid command: " + input);
                 }
             }
-            catch(InvalidCritterException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
-            {
+            catch(InvalidCritterException | ClassNotFoundException | NoSuchMethodException |
+                    IllegalAccessException | InvocationTargetException e){
                 System.out.println("error processing: " + input);
             }
-
-            //TODO account for tabs in addition to spaces
         }
-
-
         /* Write your code above */
         System.out.flush();
 
